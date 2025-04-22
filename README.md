@@ -1,54 +1,67 @@
-# React + TypeScript + Vite
+# Lean Coffee Timer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and timer for facilitating Lean Coffee meetings.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ⏱️ Customizable topic time settings
+- ⏳ Extendable time for valuable discussions
+- 🔔 Audio notifications when time is running low
+- 🌓 Dark/light theme toggle
+- 📱 Fully responsive design for all devices
 
-## Expanding the ESLint configuration
+## Usage
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Set your desired topic time (default: 5 minutes)
+2. Set your extension time (default: 2 minutes)
+3. Click "Start Discussion" to begin the timer
+4. When time is running low, you'll hear beep notifications
+5. When time expires, you'll hear an alarm
+6. Click "Extend Time" if the group wants to continue the discussion
+7. Click "Reset" to start over with a new topic
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Development
+
+### Prerequisites
+
+- Node.js (v16+)
+- `npm`
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/paulchiu/lean-coffee-timer.git
+cd lean-coffee-timer
+
+# Install dependencies
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Running locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+The application will be available at http://localhost:5173
+
+### Building for production
+
+```bash
+npm run build
+```
+
+## Built with
+
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Shadcn](https://ui.shadcn.com/)
+
+## License
+
+MIT
+
+## Learn More
+
+For more information about Lean Coffee, visit [leancoffee.org](https://www.leancoffee.org)
