@@ -1,8 +1,11 @@
 import { Howl } from 'howler'
 
-// Sound effect for when timer ends
 export const beepSound = new Howl({
   src: ['/beep.mp3'],
+})
+
+export const alarmSound = new Howl({
+  src: ['/alarm.mp3'],
 })
 
 // Format seconds to MM:SS

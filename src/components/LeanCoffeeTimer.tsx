@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
-import { beepSound } from '@/components/timer/TimerUtils'
+import { beepSound, alarmSound } from '@/components/timer/TimerUtils'
 import { TimerDisplay } from '@/components/timer/TimerDisplay'
 import { TimerControls } from '@/components/timer/TimerControls'
 import { TimerSettings } from '@/components/timer/TimerSettings'
@@ -51,10 +51,11 @@ export default function LeanCoffeeTimer() {
 
     const interval = setInterval(() => {
       setTimeLeft(prevTime => {
-        if (prevTime >= 0 && prevTime <= 11) {
+        if (prevTime > 1 && prevTime <= 11) {
           beepSound.play()
+        } else if (prevTime >= 0 && prevTime <= 1) {
+          alarmSound.play()
         } else if (prevTime < 0) {
-          beepSound.play()
           setIsRunning(false)
           return 0
         }
