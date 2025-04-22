@@ -8,6 +8,7 @@ import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { HelpButton } from '@/components/help/HelpButton'
 import { HelpModal } from '@/components/help/HelpModal'
 import { cva } from 'class-variance-authority'
+import { GitHubButton } from './github/GitHubButton'
 
 const timerVariants = cva(
   'flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300',
@@ -111,6 +112,7 @@ export default function LeanCoffeeTimer() {
         <div className="flex gap-2">
           <ThemeToggle />
           <HelpButton onClick={() => setShowHelpModal(true)} />
+          <GitHubButton repo="paulchiu/lean-coffee-timer" />
         </div>
       </div>
 
