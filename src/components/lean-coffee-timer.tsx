@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Howl } from 'howler'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, HelpCircle, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,6 +17,7 @@ export default function LeanCoffeeTimer() {
   const [totalTime, setTotalTime] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [showHelpModal, setShowHelpModal] = useState(false)
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60)
@@ -43,25 +44,24 @@ export default function LeanCoffeeTimer() {
     setTotalTime(0)
   }, [topicTime])
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(prev => !prev)
-  }
-
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    if (!isRunning) return
 
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft(prevTime => prevTime - 1)
-        setTotalTime(prevTotal => prevTotal + 1)
-
-        if (timeLeft <= 11) {
+    const interval = setInterval(() => {
+      setTimeLeft(prevTime => {
+        if (prevTime <= 1) {
           beepSound.play()
+          setIsRunning(false)
+          return 0
         }
-      }, 1000)
-    } else if (timeLeft === 0) {
-      beepSound.play() // Play a final beep when the timer reaches zero
-      // We don't set isRunning to false here, allowing for extension
+        return prevTime - 1
+      })
+      setTotalTime(prevTotal => prevTotal + 1)
+    }, 1000)
+
+    if (timeLeft === 0) {
+      clearInterval(interval)
+      // Timer reached zero here, allowing for extension
     }
 
     return () => clearInterval(interval)
@@ -108,15 +108,13 @@ export default function LeanCoffeeTimer() {
         </Button>
         <Button
           onClick={extendTime}
-          disabled={!isRunning && timeLeft > 0}
           variant={isDarkMode ? 'secondary' : 'default'}
         >
           Extend Time
         </Button>
         <Button
           onClick={resetTimer}
-          variant={isDarkMode ? 'secondary' : 'outline'}
-          className={isDarkMode ? 'text-gray-700' : ''}
+          variant={isDarkMode ? 'secondary' : 'default'}
         >
           Reset
         </Button>
@@ -125,51 +123,108 @@ export default function LeanCoffeeTimer() {
       <div className="grid grid-cols-2 gap-4 mb-8">
         <div>
           <Label
-            htmlFor="topicTime"
+            htmlFor="topic-time"
             className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}
           >
             Topic Time (minutes)
           </Label>
           <Input
-            id="topicTime"
+            id="topic-time"
             type="number"
+            min="1"
+            max="60"
             value={topicTime / 60}
-            onChange={e => setTopicTime(Number(e.target.value) * 60)}
-            min={1}
-            className={`w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}`}
+            onChange={e => setTopicTime(parseInt(e.target.value) * 60)}
+            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+            disabled={isRunning}
           />
         </div>
         <div>
           <Label
-            htmlFor="extensionTime"
+            htmlFor="extension-time"
             className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}
           >
             Extension Time (minutes)
           </Label>
           <Input
-            id="extensionTime"
+            id="extension-time"
             type="number"
+            min="1"
+            max="30"
             value={extensionTime / 60}
-            onChange={e => setExtensionTime(Number(e.target.value) * 60)}
-            min={1}
-            className={`w-full ${isDarkMode ? 'bg-gray-700 text-white' : 'bg-white text-gray-900'}`}
+            onChange={e => setExtensionTime(parseInt(e.target.value) * 60)}
+            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+            disabled={isRunning}
           />
         </div>
       </div>
 
       <div className="fixed bottom-4 right-4">
-        <Button
-          onClick={toggleDarkMode}
-          variant={isDarkMode ? 'default' : 'outline'}
-          size="icon"
-        >
-          {isDarkMode ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowHelpModal(true)}
+            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+          >
+            <HelpCircle size={20} />
+          </Button>
+        </div>
       </div>
+
+      {/* Help Modal */}
+      {showHelpModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            className={`relative w-full max-w-lg p-6 mx-4 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2"
+              onClick={() => setShowHelpModal(false)}
+            >
+              <X size={20} />
+            </Button>
+
+            <h2 className="mb-4 text-xl font-bold">
+              Why Use a Lean Coffee Timer?
+            </h2>
+
+            <div className="space-y-3">
+              <p>
+                Lean Coffee is a structured but agenda-less meeting format that
+                helps teams:
+              </p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Keep discussions focused and time-boxed</li>
+                <li>Ensure equal participation from all attendees</li>
+                <li>Democratically decide which topics deserve more time</li>
+                <li>Prevent meetings from running over their allocated time</li>
+                <li>Make meetings more productive and engaging</li>
+              </ul>
+              <p className="mt-4">
+                This timer helps facilitate Lean Coffee sessions by providing
+                clear time boundaries and the ability to extend discussions when
+                the group finds value in continuing.
+              </p>
+              <p className="mt-4">
+                For more information, visit{' '}
+                <a href="https://leancoffee.org/">https://leancoffee.org/</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
