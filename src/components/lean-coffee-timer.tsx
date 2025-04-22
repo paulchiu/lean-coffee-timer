@@ -81,7 +81,7 @@ export default function LeanCoffeeTimer() {
       className={`flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}
     >
       <motion.div
-        className={`text-[12rem]/[12rem] tabular-nums font-bold ${timerColor}`}
+        className={`text-[5rem] sm:text-[8rem] md:text-[12rem]/[12rem] tabular-nums font-bold ${timerColor}`}
         animate={{ scale: timeLeft <= 10 ? [1, 1.1, 1] : 1 }}
         transition={{
           duration: 0.5,
@@ -92,39 +92,42 @@ export default function LeanCoffeeTimer() {
       </motion.div>
 
       <div
-        className={`mb-16 text-2xl ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}
+        className={`mb-8 text-lg sm:text-xl md:text-2xl ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}
       >
         Discussion Time{' '}
         <span className="tabular-nums">{formatTime(totalTime)}</span>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-8">
+      <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
         <Button
           onClick={startTimer}
           disabled={isRunning}
           variant={isDarkMode ? 'secondary' : 'default'}
+          className="text-sm sm:text-base"
         >
           Start Discussion
         </Button>
         <Button
           onClick={extendTime}
           variant={isDarkMode ? 'secondary' : 'default'}
+          className="text-sm sm:text-base"
         >
           Extend Time
         </Button>
         <Button
           onClick={resetTimer}
           variant={isDarkMode ? 'secondary' : 'default'}
+          className="text-sm sm:text-base"
         >
           Reset
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <div>
           <Label
             htmlFor="topic-time"
-            className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}
+            className={`text-sm mb-1 block ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}
           >
             Topic Time (minutes)
           </Label>
@@ -135,14 +138,14 @@ export default function LeanCoffeeTimer() {
             max="60"
             value={topicTime / 60}
             onChange={e => setTopicTime(parseInt(e.target.value) * 60)}
-            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+            className={`${isDarkMode ? 'bg-gray-800 text-white' : ''} text-center`}
             disabled={isRunning}
           />
         </div>
         <div>
           <Label
             htmlFor="extension-time"
-            className={isDarkMode ? 'text-gray-300' : 'text-gray-700'}
+            className={`text-sm mb-1 block ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}
           >
             Extension Time (minutes)
           </Label>
@@ -153,13 +156,13 @@ export default function LeanCoffeeTimer() {
             max="30"
             value={extensionTime / 60}
             onChange={e => setExtensionTime(parseInt(e.target.value) * 60)}
-            className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+            className={`${isDarkMode ? 'bg-gray-800 text-white' : ''} text-center`}
             disabled={isRunning}
           />
         </div>
       </div>
 
-      <div className="fixed bottom-4 right-4">
+      <div className="fixed bottom-4 right-4 z-10">
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -183,9 +186,9 @@ export default function LeanCoffeeTimer() {
 
       {/* Help Modal */}
       {showHelpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <div
-            className={`relative w-full max-w-lg p-6 mx-4 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
+            className={`relative w-full max-w-lg p-4 sm:p-6 mx-auto rounded-lg shadow-lg overflow-y-auto max-h-[90vh] ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
           >
             <Button
               variant="ghost"
@@ -196,11 +199,11 @@ export default function LeanCoffeeTimer() {
               <X size={20} />
             </Button>
 
-            <h2 className="mb-4 text-xl font-bold">
+            <h2 className="mb-4 text-lg sm:text-xl font-bold pr-6">
               Why Use a Lean Coffee Timer?
             </h2>
 
-            <div className="space-y-3">
+            <div className="space-y-3 text-sm sm:text-base">
               <p>
                 Lean Coffee is a structured but agenda-less meeting format that
                 helps teams:
@@ -219,7 +222,14 @@ export default function LeanCoffeeTimer() {
               </p>
               <p className="mt-4">
                 For more information, visit{' '}
-                <a href="https://leancoffee.org/">https://leancoffee.org/</a>
+                <a
+                  href="https://leancoffee.org/"
+                  className="text-blue-500 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  leancoffee.org
+                </a>
               </p>
             </div>
           </div>
