@@ -1,10 +1,11 @@
-import LeanCoffeeTimer from './components/lean-coffee-timer'
+import LeanCoffeeTimer from '@/components/LeanCoffeeTimer'
+import { ThemeProvider } from './contexts/ThemeContext'
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <LeanCoffeeTimer />
-    </>
+    </ThemeProvider>
   )
 }
 
