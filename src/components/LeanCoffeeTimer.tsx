@@ -94,7 +94,6 @@ export default function LeanCoffeeTimer() {
         extensionTime={extensionTime}
         onTopicTimeChange={setTopicTime}
         onExtensionTimeChange={setExtensionTime}
-        isRunning={isRunning}
       />
 
       {/* Theme and Help Controls */}

@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { useTheme } from '@/contexts/ThemeContext'
 
 type TimerControlsProps = {
   isRunning: boolean
@@ -14,28 +13,26 @@ export function TimerControls({
   onExtend,
   onReset,
 }: TimerControlsProps) {
-  const { isDarkMode } = useTheme()
-
   return (
     <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
       <Button
+        onClick={onExtend}
+        variant={isRunning ? 'default' : 'ghost'}
+        className="text-sm sm:text-base"
+      >
+        Extend
+      </Button>
+      <Button
         onClick={onStart}
         disabled={isRunning}
-        variant={isDarkMode ? 'secondary' : 'default'}
+        variant="default"
         className="text-sm sm:text-base"
       >
         Start Discussion
       </Button>
       <Button
-        onClick={onExtend}
-        variant={isDarkMode ? 'secondary' : 'default'}
-        className="text-sm sm:text-base"
-      >
-        Extend Time
-      </Button>
-      <Button
         onClick={onReset}
-        variant={isDarkMode ? 'secondary' : 'default'}
+        variant={isRunning ? 'destructive' : 'ghost'}
         className="text-sm sm:text-base"
       >
         Reset

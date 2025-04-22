@@ -8,7 +8,6 @@ type TimerSettingsProps = {
   extensionTime: number
   onTopicTimeChange: (value: number) => void
   onExtensionTimeChange: (value: number) => void
-  isRunning: boolean
 }
 
 export function TimerSettings({
@@ -16,7 +15,6 @@ export function TimerSettings({
   extensionTime,
   onTopicTimeChange,
   onExtensionTimeChange,
-  isRunning,
 }: TimerSettingsProps) {
   const { isDarkMode } = useTheme()
 
@@ -40,7 +38,6 @@ export function TimerSettings({
           value={topicTime / 60}
           onChange={e => onTopicTimeChange(Number(e.target.value) * 60)}
           className={cn('text-center', isDarkMode && 'bg-gray-800 text-white')}
-          disabled={isRunning}
         />
       </div>
       <div>
@@ -61,7 +58,6 @@ export function TimerSettings({
           value={extensionTime / 60}
           onChange={e => onExtensionTimeChange(Number(e.target.value) * 60)}
           className={cn('text-center', isDarkMode && 'bg-gray-800 text-white')}
-          disabled={isRunning}
         />
       </div>
     </div>
