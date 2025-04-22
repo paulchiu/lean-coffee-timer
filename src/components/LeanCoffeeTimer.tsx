@@ -7,7 +7,22 @@ import { TimerSettings } from '@/components/timer/TimerSettings'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { HelpButton } from '@/components/help/HelpButton'
 import { HelpModal } from '@/components/help/HelpModal'
-import { cn } from '@/lib/utils'
+import { cva } from 'class-variance-authority'
+
+const timerVariants = cva(
+  'flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300',
+  {
+    variants: {
+      theme: {
+        light: 'bg-white text-gray-900',
+        dark: 'bg-gray-900 text-white',
+      },
+    },
+    defaultVariants: {
+      theme: 'light',
+    },
+  }
+)
 
 export default function LeanCoffeeTimer() {
   // Timer state
@@ -21,7 +36,7 @@ export default function LeanCoffeeTimer() {
   const [showHelpModal, setShowHelpModal] = useState(false)
 
   // Theme context
-  const { isDarkMode } = useTheme()
+  const { theme } = useTheme()
 
   // Timer control handlers
   const startTimer = useCallback(() => {
@@ -74,12 +89,7 @@ export default function LeanCoffeeTimer() {
   }, [isRunning, timeLeft])
 
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300',
-        isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
-      )}
-    >
+    <div className={timerVariants({ theme })}>
       <TimerDisplay timeLeft={timeLeft} totalTime={totalTime} />
 
       <TimerControls

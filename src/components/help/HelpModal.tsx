@@ -1,15 +1,30 @@
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
-import { cn } from '@/lib/utils'
+import { cva } from 'class-variance-authority'
 
 type HelpModalProps = {
   isOpen: boolean
   onClose: () => void
 }
 
+const modalVariants = cva(
+  'relative w-full max-w-lg p-4 sm:p-6 mx-auto rounded-lg shadow-lg overflow-y-auto max-h-[90vh]',
+  {
+    variants: {
+      theme: {
+        light: 'bg-white text-gray-900',
+        dark: 'bg-gray-800 text-white',
+      },
+    },
+    defaultVariants: {
+      theme: 'light',
+    },
+  }
+)
+
 export function HelpModal({ isOpen, onClose }: HelpModalProps) {
-  const { isDarkMode } = useTheme()
+  const { theme } = useTheme()
 
   if (!isOpen) {
     return null
@@ -17,12 +32,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={cn(
-          'relative w-full max-w-lg p-4 sm:p-6 mx-auto rounded-lg shadow-lg overflow-y-auto max-h-[90vh]',
-          isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
-        )}
-      >
+      <div className={modalVariants({ theme })}>
         <Button
           variant="ghost"
           size="icon"

@@ -8,6 +8,7 @@ import {
 
 type ThemeContextType = {
   isDarkMode: boolean
+  theme: 'dark' | 'light'
   toggleDarkMode: () => void
 }
 
@@ -15,6 +16,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [theme, setTheme] = useState<ThemeContextType['theme']>('light')
 
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev)
@@ -24,13 +26,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark')
+      setTheme('dark')
     } else {
       document.documentElement.classList.remove('dark')
+      setTheme('light')
     }
   }, [isDarkMode])
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
+    <ThemeContext.Provider value={{ isDarkMode, theme, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   )
