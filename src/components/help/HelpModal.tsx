@@ -38,6 +38,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
           size="icon"
           className="absolute top-2 right-2"
           onClick={onClose}
+          aria-label="Close help modal"
         >
           <X size={20} />
         </Button>
@@ -70,6 +71,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
               className="text-blue-500 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Visit Lean Coffee official website (opens in new tab)"
             >
               leancoffee.org
             </a>

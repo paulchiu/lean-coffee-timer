@@ -15,6 +15,7 @@ export function HelpButton({ onClick }: HelpButtonProps) {
       size="icon"
       onClick={onClick}
       className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+      aria-label="Show 'Why Lean Coffee Timer?'"
     >
       <HelpCircle size={20} />
     </Button>

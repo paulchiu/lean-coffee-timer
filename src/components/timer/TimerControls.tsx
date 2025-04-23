@@ -19,6 +19,7 @@ export function TimerControls({
         onClick={onExtend}
         variant={isRunning ? 'default' : 'ghost'}
         className="text-sm sm:text-base"
+        aria-label="Extend discussion time"
       >
         Extend
       </Button>
@@ -27,6 +28,7 @@ export function TimerControls({
         disabled={isRunning}
         variant="default"
         className="text-sm sm:text-base"
+        aria-label="Start discussion timer"
       >
         Start Discussion
       </Button>
@@ -34,6 +36,7 @@ export function TimerControls({
         onClick={onReset}
         variant={isRunning ? 'destructive' : 'ghost'}
         className="text-sm sm:text-base"
+        aria-label="Reset timer"
       >
         Reset
       </Button>

@@ -77,13 +77,16 @@ export function TimerDisplay({ timeLeft, totalTime }: TimerDisplayProps) {
           duration: 0.5,
           repeat: timeLeft <= 10 ? Number.POSITIVE_INFINITY : 0,
         }}
+        aria-label="Time remaining"
       >
         {formatTime(timeLeft)}
       </motion.div>
 
       <div className={discussionTimeVariants({ theme })}>
         Discussion Time{' '}
-        <span className="tabular-nums">{formatTime(totalTime)}</span>
+        <span className="tabular-nums" aria-label="Time lapsed">
+          {formatTime(totalTime)}
+        </span>
       </div>
     </>
   )

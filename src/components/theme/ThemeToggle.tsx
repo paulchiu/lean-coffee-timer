@@ -11,6 +11,7 @@ export function ThemeToggle() {
       size="icon"
       onClick={toggleDarkMode}
       className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+      aria-label={isDarkMode ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
     </Button>

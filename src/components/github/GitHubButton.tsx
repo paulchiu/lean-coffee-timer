@@ -10,9 +10,7 @@ export function GitHubButton({ repo }: GitHubButtonProps) {
   const { isDarkMode } = useTheme()
 
   const handleClick = () => {
-    // Construct the full GitHub URL
     const githubUrl = `https://github.com/${repo}`
-    // Redirect to the repository
     window.open(githubUrl, '_blank')
   }
 
@@ -22,6 +20,7 @@ export function GitHubButton({ repo }: GitHubButtonProps) {
       size="icon"
       onClick={handleClick}
       className={isDarkMode ? 'bg-gray-800 text-white' : ''}
+      aria-label={`View ${repo} on GitHub (opens new in tab)`}
     >
       <Github size={20} />
     </Button>

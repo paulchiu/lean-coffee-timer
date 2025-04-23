@@ -56,7 +56,12 @@ export function TimerSettings({
           value={topicTime / 60}
           onChange={e => onTopicTimeChange(Number(e.target.value) * 60)}
           className={inputVariants({ theme })}
+          aria-describedby="topic-time-description"
         />
+        <div id="topic-time-description" className="sr-only">
+          Enter a value between 1 and 60 minutes for the starting topic
+          discussion time
+        </div>
       </div>
       <div>
         <Label htmlFor="extension-time" className={labelVariants({ theme })}>
@@ -70,7 +75,12 @@ export function TimerSettings({
           value={extensionTime / 60}
           onChange={e => onExtensionTimeChange(Number(e.target.value) * 60)}
           className={inputVariants({ theme })}
+          aria-describedby="extension-time-description"
         />
+        <div id="extension-time-description" className="sr-only">
+          Enter a value between 1 and 60 minutes for how long you would like to
+          extend discussions by
+        </div>
       </div>
     </div>
   )
