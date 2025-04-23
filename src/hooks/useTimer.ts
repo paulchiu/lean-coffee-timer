@@ -1,8 +1,10 @@
 import { useEffect, useReducer } from 'react'
 import { beepSound, alarmSound } from '@/components/timer/TimerUtils'
+import store from 'store2'
 
 const FIVE_MINS = 5 * 60
 const TWO_MINS = 2 * 60
+const SETTINGS_KEY = 'timerSettings'
 
 interface UseTimerProps {
   initialTopicTime?: number
@@ -27,10 +29,22 @@ export type TimerAction =
 
 function timerReducer(state: TimerState, action: TimerAction): TimerState {
   switch (action.type) {
-    case 'SET_TOPIC_TIME':
-      return { ...state, topicTime: action.payload }
-    case 'SET_EXTENSION_TIME':
-      return { ...state, extensionTime: action.payload }
+    case 'SET_TOPIC_TIME': {
+      const newState = { ...state, topicTime: action.payload }
+      store.set(SETTINGS_KEY, {
+        topicTime: newState.topicTime,
+        extensionTime: newState.extensionTime,
+      })
+      return newState
+    }
+    case 'SET_EXTENSION_TIME': {
+      const newState = { ...state, extensionTime: action.payload }
+      store.set(SETTINGS_KEY, {
+        topicTime: newState.topicTime,
+        extensionTime: newState.extensionTime,
+      })
+      return newState
+    }
     case 'START_TIMER':
       return {
         ...state,
@@ -78,13 +92,15 @@ export function useTimer({
   initialTopicTime = FIVE_MINS,
   initialExtensionTime = TWO_MINS,
 }: UseTimerProps = {}) {
+  const savedSettings = store.get(SETTINGS_KEY) || {}
   const initialState: TimerState = {
-    topicTime: initialTopicTime,
-    extensionTime: initialExtensionTime,
-    timeLeft: initialTopicTime,
+    topicTime: savedSettings.topicTime || initialTopicTime,
+    extensionTime: savedSettings.extensionTime || initialExtensionTime,
+    timeLeft: savedSettings.topicTime || initialTopicTime,
     totalTime: 0,
     isRunning: false,
   }
+
   const [state, dispatch] = useReducer(timerReducer, initialState)
 
   // Timer countdown
