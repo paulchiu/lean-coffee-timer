@@ -8,13 +8,21 @@
   },
   "scripts": {
     "build": "tsc -b && vite build",
+    "ci": "npm run format && npm run lint && npm run typecheck && npm run test:coverage",
+    "ci:fix": "npm run format:fix && npm run lint:fix && npm run typecheck && npm run test:coverage",
     "coverage": "vitest run --coverage",
     "dev": "vite",
-    "fmt": "prettier -w .",
-    "lint": "eslint .",
+    "format": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\"",
+    "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css,scss}\"",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "pre-commit": "npm run ci",
+    "pre-push": "npm run ci",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.4",
