@@ -1,5 +1,9 @@
 # Lean Coffee Timer
 
+[![CI](https://github.com/paulchiu/lean-coffee-timer/actions/workflows/ci.yml/badge.svg)](https://github.com/paulchiu/lean-coffee-timer/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/paulchiu/lean-coffee-timer/graph/badge.svg?token=FWQEFXSRBB)](https://codecov.io/gh/paulchiu/lean-coffee-timer)
+[![License](https://img.shields.io/github/license/paulchiu/lean-coffee-timer)](https://github.com/paulchiu/lean-coffee-timer/blob/main/LICENSE)
+
 A simple and timer for facilitating Lean Coffee meetings.
 
 ## Features
