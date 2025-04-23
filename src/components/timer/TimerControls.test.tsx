@@ -18,46 +18,32 @@ describe('TimerControls', () => {
   it('renders all three buttons correctly', () => {
     render(<TimerControls {...mockProps} />)
 
-    expect(
-      screen.getByRole('button', { name: /extend discussion time/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: /start discussion timer/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: /reset timer/i })
-    ).toBeInTheDocument()
-  })
-
-  it('calls onStart when Start Discussion button is clicked', async () => {
-    render(<TimerControls {...mockProps} />)
-
-    const startButton = screen.getByRole('button', {
-      name: /start discussion timer/i,
-    })
-    await userEvent.click(startButton)
-
-    expect(mockProps.onStart).toHaveBeenCalledTimes(1)
-  })
-
-  it('calls onExtend when Extend button is clicked', async () => {
-    render(<TimerControls {...mockProps} />)
-
     const extendButton = screen.getByRole('button', {
       name: /extend discussion time/i,
     })
-    await userEvent.click(extendButton)
+    const startButton = screen.getByRole('button', {
+      name: /start discussion timer/i,
+    })
+    const resetButton = screen.getByRole('button', { name: /reset timer/i })
 
-    expect(mockProps.onExtend).toHaveBeenCalledTimes(1)
+    expect(extendButton).toBeInTheDocument()
+    expect(startButton).toBeInTheDocument()
+    expect(resetButton).toBeInTheDocument()
   })
 
-  it('calls onReset when Reset button is clicked', async () => {
+  it('has responsive layout with different column spans', () => {
     render(<TimerControls {...mockProps} />)
 
-    const resetButton = screen.getByRole('button', { name: /reset timer/i })
-    await userEvent.click(resetButton)
+    // Start button should span 2 columns on mobile
+    const startButton = screen.getByRole('button', {
+      name: /start discussion timer/i,
+    })
+    expect(startButton).toHaveClass('col-span-2')
+    expect(startButton).toHaveClass('sm:col-span-1')
 
-    expect(mockProps.onReset).toHaveBeenCalledTimes(1)
+    // Check responsive text sizes
+    expect(startButton).toHaveClass('text-sm')
+    expect(startButton).toHaveClass('sm:text-base')
   })
 
   it('disables Start Discussion button when isRunning is true', () => {
@@ -83,16 +69,16 @@ describe('TimerControls', () => {
       <TimerControls {...mockProps} isRunning={false} />
     )
 
-    // When not running, Extend button should have ghost variant (no bg-primary class)
+    // When not running, Extend button should have ghost variant (hover:bg-accent)
     let extendButton = screen.getByRole('button', {
       name: /extend discussion time/i,
     })
-    expect(extendButton).not.toHaveClass('bg-primary')
     expect(extendButton).toHaveClass('hover:bg-accent')
+    expect(extendButton).not.toHaveClass('bg-primary')
 
     rerender(<TimerControls {...mockProps} isRunning={true} />)
 
-    // When running, Extend button should have default variant (has bg-primary class)
+    // When running, Extend button should have default variant (bg-primary)
     extendButton = screen.getByRole('button', {
       name: /extend discussion time/i,
     })
@@ -104,15 +90,52 @@ describe('TimerControls', () => {
       <TimerControls {...mockProps} isRunning={false} />
     )
 
-    // When not running, Reset button should have ghost variant (no bg-destructive class)
+    // When not running, Reset button should have ghost variant (hover:bg-accent)
     let resetButton = screen.getByRole('button', { name: /reset timer/i })
-    expect(resetButton).not.toHaveClass('bg-destructive')
     expect(resetButton).toHaveClass('hover:bg-accent')
+    expect(resetButton).not.toHaveClass('bg-destructive')
 
     rerender(<TimerControls {...mockProps} isRunning={true} />)
 
-    // When running, Reset button should have destructive variant (has bg-destructive class)
+    // When running, Reset button should have destructive variant (bg-destructive)
     resetButton = screen.getByRole('button', { name: /reset timer/i })
     expect(resetButton).toHaveClass('bg-destructive')
+  })
+
+  it('calls handler functions when buttons are clicked', async () => {
+    render(<TimerControls {...mockProps} />)
+
+    const startButton = screen.getByRole('button', {
+      name: /start discussion timer/i,
+    })
+    const extendButton = screen.getByRole('button', {
+      name: /extend discussion time/i,
+    })
+    const resetButton = screen.getByRole('button', { name: /reset timer/i })
+
+    await userEvent.click(startButton)
+    expect(mockProps.onStart).toHaveBeenCalledTimes(1)
+
+    await userEvent.click(extendButton)
+    expect(mockProps.onExtend).toHaveBeenCalledTimes(1)
+
+    await userEvent.click(resetButton)
+    expect(mockProps.onReset).toHaveBeenCalledTimes(1)
+  })
+
+  it('has correct order of buttons in desktop view', () => {
+    render(<TimerControls {...mockProps} />)
+
+    const startButton = screen.getByRole('button', {
+      name: /start discussion timer/i,
+    })
+    const extendButton = screen.getByRole('button', {
+      name: /extend discussion time/i,
+    })
+    const resetButton = screen.getByRole('button', { name: /reset timer/i })
+
+    expect(startButton).toHaveClass('sm:order-2')
+    expect(extendButton).toHaveClass('sm:order-1')
+    expect(resetButton).toHaveClass('sm:order-3')
   })
 })
