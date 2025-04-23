@@ -68,7 +68,7 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
     case 'TICK': {
       const newTimeLeft = state.timeLeft - 1
 
-      if (newTimeLeft < 0) {
+      if (newTimeLeft <= 0) {
         return {
           ...state,
           isRunning: false,
