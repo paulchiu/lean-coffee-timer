@@ -7,7 +7,7 @@ import {
 } from 'react'
 import store from 'store2'
 
-type ThemeContextType = {
+export type ThemeContextType = {
   isDarkMode: boolean
   theme: 'dark' | 'light'
   toggleDarkMode: () => void
