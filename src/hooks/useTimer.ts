@@ -17,6 +17,7 @@ export interface TimerState {
   timeLeft: number
   totalTime: number
   isRunning: boolean
+  isMuted: boolean
 }
 
 export type TimerAction =
@@ -25,6 +26,7 @@ export type TimerAction =
   | { type: 'START_TIMER' }
   | { type: 'EXTEND_TIMER' }
   | { type: 'RESET_TIMER' }
+  | { type: 'TOGGLE_MUTE' }
   | { type: 'TICK' }
 
 function timerReducer(state: TimerState, action: TimerAction): TimerState {
@@ -34,6 +36,7 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
       store.set(SETTINGS_KEY, {
         topicTime: newState.topicTime,
         extensionTime: newState.extensionTime,
+        isMuted: newState.isMuted,
       })
       return newState
     }
@@ -42,6 +45,16 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
       store.set(SETTINGS_KEY, {
         topicTime: newState.topicTime,
         extensionTime: newState.extensionTime,
+        isMuted: newState.isMuted,
+      })
+      return newState
+    }
+    case 'TOGGLE_MUTE': {
+      const newState = { ...state, isMuted: !state.isMuted }
+      store.set(SETTINGS_KEY, {
+        topicTime: newState.topicTime,
+        extensionTime: newState.extensionTime,
+        isMuted: newState.isMuted,
       })
       return newState
     }
@@ -99,6 +112,7 @@ export function useTimer({
     timeLeft: savedSettings.topicTime || initialTopicTime,
     totalTime: 0,
     isRunning: false,
+    isMuted: savedSettings.isMuted || false,
   }
 
   const [state, dispatch] = useReducer(timerReducer, initialState)
@@ -111,11 +125,14 @@ export function useTimer({
 
     const interval = setInterval(() => {
       const nextTick = state.timeLeft - 1
+      const playSound = !state.isMuted
 
-      if (1 <= nextTick && nextTick <= 10) {
-        beepSound.play()
-      } else if (nextTick === 0) {
-        alarmSound.play()
+      if (playSound) {
+        if (1 <= nextTick && nextTick <= 10) {
+          beepSound.play()
+        } else if (nextTick === 0) {
+          alarmSound.play()
+        }
       }
 
       dispatch({ type: 'TICK' })
@@ -126,7 +143,7 @@ export function useTimer({
     }
 
     return () => clearInterval(interval)
-  }, [state.isRunning, state.timeLeft])
+  }, [state.isRunning, state.timeLeft, state.isMuted])
 
   // Hook provides state and dispatch function
   return { state, dispatch }

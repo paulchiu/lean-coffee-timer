@@ -6,6 +6,7 @@ import { TimerSettings } from '@/components/timer/TimerSettings'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { HelpButton } from '@/components/help/HelpButton'
 import { HelpModal } from '@/components/help/HelpModal'
+import { MuteButton } from '@/components/sound/MuteButton'
 import { cva } from 'class-variance-authority'
 import { GitHubButton } from './github/GitHubButton'
 import { useTimer } from '@/hooks/useTimer'
@@ -55,6 +56,10 @@ export default function LeanCoffeeTimer() {
       {/* App controls */}
       <div className="fixed bottom-4 right-4 z-10">
         <div className="flex gap-2">
+          <MuteButton
+            isMuted={timer.isMuted}
+            onToggle={() => dispatch({ type: 'TOGGLE_MUTE' })}
+          />
           <ThemeToggle />
           <HelpButton onClick={() => setShowHelpModal(true)} />
           <GitHubButton repo="paulchiu/lean-coffee-timer" />

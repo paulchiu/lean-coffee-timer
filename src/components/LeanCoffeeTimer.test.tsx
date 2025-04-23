@@ -44,6 +44,11 @@ interface GitHubButtonProps {
   repo: string
 }
 
+interface MuteButtonProps {
+  isMuted: boolean
+  onToggle: () => void
+}
+
 vi.mock('@/components/timer/TimerDisplay', () => ({
   TimerDisplay: ({ timeLeft, totalTime }: TimerDisplayProps) => (
     <div data-testid="timer-display">
@@ -124,6 +129,14 @@ vi.mock('@/components/github/GitHubButton', () => ({
   ),
 }))
 
+vi.mock('@/components/sound/MuteButton', () => ({
+  MuteButton: ({ isMuted, onToggle }: MuteButtonProps) => (
+    <button data-testid="mute-button" onClick={onToggle} aria-pressed={isMuted}>
+      {isMuted ? 'Unmute' : 'Mute'}
+    </button>
+  ),
+}))
+
 describe('LeanCoffeeTimer', () => {
   const mockDispatch = vi.fn() as unknown as React.Dispatch<TimerAction>
   const mockTimerState: TimerState = {
@@ -132,6 +145,7 @@ describe('LeanCoffeeTimer', () => {
     topicTime: 300,
     extensionTime: 60,
     isRunning: false,
+    isMuted: false,
   }
 
   beforeEach(() => {
@@ -156,6 +170,7 @@ describe('LeanCoffeeTimer', () => {
     expect(screen.getByTestId('theme-toggle')).toBeInTheDocument()
     expect(screen.getByTestId('help-button')).toBeInTheDocument()
     expect(screen.getByTestId('github-button')).toBeInTheDocument()
+    expect(screen.getByTestId('mute-button')).toBeInTheDocument()
   })
 
   it('applies the correct theme class based on theme context', () => {
@@ -244,5 +259,39 @@ describe('LeanCoffeeTimer', () => {
     // Close the modal
     fireEvent.click(screen.getByTestId('close-modal'))
     expect(screen.queryByTestId('help-modal')).not.toBeInTheDocument()
+  })
+
+  it('dispatches TOGGLE_MUTE action when mute button is clicked', () => {
+    render(<LeanCoffeeTimer />)
+
+    fireEvent.click(screen.getByTestId('mute-button'))
+
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'TOGGLE_MUTE' })
+  })
+
+  it('displays muted state when timer is muted', () => {
+    vi.mocked(useTimer).mockReturnValue({
+      state: { ...mockTimerState, isMuted: true },
+      dispatch: mockDispatch,
+    })
+
+    render(<LeanCoffeeTimer />)
+
+    const muteButton = screen.getByTestId('mute-button')
+    expect(muteButton).toHaveAttribute('aria-pressed', 'true')
+    expect(muteButton).toHaveTextContent('Unmute')
+  })
+
+  it('displays unmuted state when timer is not muted', () => {
+    vi.mocked(useTimer).mockReturnValue({
+      state: { ...mockTimerState, isMuted: false },
+      dispatch: mockDispatch,
+    })
+
+    render(<LeanCoffeeTimer />)
+
+    const muteButton = screen.getByTestId('mute-button')
+    expect(muteButton).toHaveAttribute('aria-pressed', 'false')
+    expect(muteButton).toHaveTextContent('Mute')
   })
 })

@@ -37,6 +37,7 @@ describe('useTimer', () => {
         timeLeft: 5 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: false,
       })
     })
 
@@ -44,6 +45,7 @@ describe('useTimer', () => {
       const savedSettings = {
         topicTime: 10 * 60,
         extensionTime: 3 * 60,
+        isMuted: true,
       }
       vi.mocked(store.get).mockReturnValue(savedSettings)
 
@@ -55,6 +57,7 @@ describe('useTimer', () => {
         timeLeft: 10 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: true,
       })
     })
 
@@ -69,6 +72,7 @@ describe('useTimer', () => {
         timeLeft: 15 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: false,
       })
     })
 
@@ -76,6 +80,7 @@ describe('useTimer', () => {
       const savedSettings = {
         topicTime: 10 * 60,
         extensionTime: 3 * 60,
+        isMuted: true,
       }
       vi.mocked(store.get).mockReturnValue(savedSettings)
 
@@ -89,6 +94,7 @@ describe('useTimer', () => {
         timeLeft: 10 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: true,
       })
     })
   })
@@ -105,6 +111,7 @@ describe('useTimer', () => {
       expect(store.set).toHaveBeenCalledWith('timerSettings', {
         topicTime: 10 * 60,
         extensionTime: 2 * 60,
+        isMuted: false,
       })
     })
 
@@ -143,6 +150,7 @@ describe('useTimer', () => {
       expect(store.set).toHaveBeenCalledWith('timerSettings', {
         topicTime: 5 * 60,
         extensionTime: 3 * 60,
+        isMuted: false,
       })
     })
 
@@ -169,6 +177,92 @@ describe('useTimer', () => {
     })
   })
 
+  describe('TOGGLE_MUTE', () => {
+    it('should toggle mute state and save to store', () => {
+      const { result } = renderHook(() => useTimer())
+
+      expect(result.current.state.isMuted).toBe(false)
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      expect(result.current.state.isMuted).toBe(true)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: true,
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      expect(result.current.state.isMuted).toBe(false)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: false,
+      })
+    })
+
+    it('should not play sounds when muted', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Fast-forward to 10 seconds left
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 - 10) * 1000)
+      })
+
+      expect(beepSound.play).not.toHaveBeenCalled()
+
+      // Fast-forward to 0 seconds
+      act(() => {
+        vi.advanceTimersByTime(10 * 1000)
+      })
+
+      expect(alarmSound.play).not.toHaveBeenCalled()
+    })
+
+    it('should resume playing sounds when unmuted', () => {
+      const { result } = renderHook(() => useTimer())
+
+      // Start muted
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Fast-forward to 11 seconds left (just before beeps start)
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 - 11) * 1000)
+      })
+
+      // Unmute
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      // Advance to 10 seconds left (should trigger beep)
+      act(() => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(beepSound.play).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe('START_TIMER', () => {
     it('should start the timer', () => {
       const { result } = renderHook(() => useTimer())
@@ -183,6 +277,7 @@ describe('useTimer', () => {
         timeLeft: 5 * 60,
         totalTime: 0,
         isRunning: true,
+        isMuted: false,
       })
     })
 
@@ -292,6 +387,7 @@ describe('useTimer', () => {
         timeLeft: 5 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: false,
       })
     })
 
@@ -313,6 +409,7 @@ describe('useTimer', () => {
         timeLeft: 10 * 60,
         totalTime: 0,
         isRunning: false,
+        isMuted: false,
       })
     })
   })
@@ -476,6 +573,34 @@ describe('useTimer', () => {
       })
 
       expect(result.current.state.timeLeft).toBe(10 * 60 - 60 + 3 * 60)
+    })
+
+    it('should maintain mute state across timer operations', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_MUTE' })
+      })
+
+      expect(result.current.state.isMuted).toBe(true)
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      expect(result.current.state.isMuted).toBe(true)
+
+      act(() => {
+        result.current.dispatch({ type: 'RESET_TIMER' })
+      })
+
+      expect(result.current.state.isMuted).toBe(true)
+
+      act(() => {
+        result.current.dispatch({ type: 'EXTEND_TIMER' })
+      })
+
+      expect(result.current.state.isMuted).toBe(true)
     })
   })
 })
