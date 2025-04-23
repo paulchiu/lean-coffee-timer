@@ -7,13 +7,13 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "test": "vitest run",
     "build": "tsc -b && vite build",
     "coverage": "vitest run --coverage",
     "dev": "vite",
     "fmt": "prettier -w .",
     "lint": "eslint .",
     "preview": "vite preview",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
