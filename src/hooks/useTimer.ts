@@ -125,14 +125,16 @@ export function useTimer({
 
     const interval = setInterval(() => {
       const nextTick = state.timeLeft - 1
-      const playSound = !state.isMuted
 
-      if (playSound) {
-        if (1 <= nextTick && nextTick <= 10) {
-          beepSound.play()
-        } else if (nextTick === 0) {
-          alarmSound.play()
-        }
+      if (state.isMuted) {
+        dispatch({ type: 'TICK' })
+        return
+      }
+
+      if (1 <= nextTick && nextTick <= 10) {
+        beepSound.play()
+      } else if (nextTick === 0) {
+        alarmSound.play()
       }
 
       dispatch({ type: 'TICK' })
