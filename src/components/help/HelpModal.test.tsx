@@ -82,11 +82,11 @@ describe('HelpModal', () => {
     render(<HelpModal isOpen={true} onClose={mockOnClose} />)
 
     const listItems = [
-      'Keep discussions focused and time-boxed',
-      'Ensure equal participation from all attendees',
-      'Democratically decide which topics deserve more time',
-      'Prevent meetings from running over their allocated time',
-      'Make meetings more productive and engaging',
+      'Keep discussions focused and time-boxed.',
+      'Ensure equal participation from all attendees.',
+      'Democratically decide which topics deserve more time.',
+      'Prevent meetings from running over their allocated time.',
+      'Make meetings more productive and engaging.',
     ]
 
     listItems.forEach(item => {

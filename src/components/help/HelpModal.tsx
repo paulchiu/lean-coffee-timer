@@ -53,11 +53,11 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             helps teams:
           </p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Keep discussions focused and time-boxed</li>
-            <li>Ensure equal participation from all attendees</li>
-            <li>Democratically decide which topics deserve more time</li>
-            <li>Prevent meetings from running over their allocated time</li>
-            <li>Make meetings more productive and engaging</li>
+            <li>Keep discussions focused and time-boxed.</li>
+            <li>Ensure equal participation from all attendees.</li>
+            <li>Democratically decide which topics deserve more time.</li>
+            <li>Prevent meetings from running over their allocated time.</li>
+            <li>Make meetings more productive and engaging.</li>
           </ul>
           <p className="mt-4">
             This timer helps facilitate Lean Coffee sessions by providing clear
