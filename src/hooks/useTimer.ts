@@ -96,8 +96,10 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
         totalTime: state.totalTime + 1,
       }
     }
-    default:
-      return state
+    default: {
+      const type: never = action
+      throw new Error(`Unexpected action: ${type}`)
+    }
   }
 }
 
