@@ -24,5 +24,6 @@ updates:
           - "vitest"
           - "typescript*"
         update-types:
+          - "major"
           - "minor"
           - "patch"
