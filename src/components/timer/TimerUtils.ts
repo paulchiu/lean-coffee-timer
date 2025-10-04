@@ -13,7 +13,6 @@ export const formatTime = (
   time: number,
   allowNegative: boolean = false
 ): string => {
-
   if (time < 0 && !allowNegative) {
     return '00:00'
   }

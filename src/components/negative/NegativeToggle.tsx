@@ -26,4 +26,3 @@ export function NegativeToggle({ isEnabled, onToggle }: NegativeToggleProps) {
     </Button>
   )
 }
-

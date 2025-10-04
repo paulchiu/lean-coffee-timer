@@ -71,4 +71,3 @@ describe('NegativeToggle', () => {
     expect(button).not.toHaveClass('text-white')
   })
 })
-
