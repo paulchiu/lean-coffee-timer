@@ -146,6 +146,7 @@ describe('LeanCoffeeTimer', () => {
     extensionTime: 60,
     isRunning: false,
     isMuted: false,
+    allowNegative: false,
   }
 
   beforeEach(() => {

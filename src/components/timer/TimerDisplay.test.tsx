@@ -44,7 +44,7 @@ describe('TimerDisplay', () => {
     expect(timerElement).toHaveTextContent(mockFormattedTimeLeft)
     expect(totalTimeElement).toBeInTheDocument()
     expect(totalTimeElement).toHaveTextContent(mockFormattedTotalTime)
-    expect(formatTime).toHaveBeenCalledWith(mockTimeLeft)
+    expect(formatTime).toHaveBeenCalledWith(mockTimeLeft, false)
     expect(formatTime).toHaveBeenCalledWith(mockTotalTime)
   })
 

@@ -38,6 +38,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -58,6 +59,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: true,
+        allowNegative: false,
       })
     })
 
@@ -73,6 +75,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -95,6 +98,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: true,
+        allowNegative: false,
       })
     })
   })
@@ -112,6 +116,7 @@ describe('useTimer', () => {
         topicTime: 10 * 60,
         extensionTime: 2 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -151,6 +156,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 3 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -192,6 +198,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 2 * 60,
         isMuted: true,
+        allowNegative: false,
       })
 
       act(() => {
@@ -203,6 +210,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 2 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -263,6 +271,105 @@ describe('useTimer', () => {
     })
   })
 
+  describe('TOGGLE_ALLOW_NEGATIVE', () => {
+    it('should toggle allowNegative and save to store', () => {
+      const { result } = renderHook(() => useTimer())
+
+      expect(result.current.state.allowNegative).toBe(false)
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      expect(result.current.state.allowNegative).toBe(true)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: false,
+        allowNegative: true,
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      expect(result.current.state.allowNegative).toBe(false)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: false,
+        allowNegative: false,
+      })
+    })
+
+    it('should continue running and go negative when enabled', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Fast-forward to 1 second left
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 - 1) * 1000)
+      })
+
+      expect(alarmSound.play).not.toHaveBeenCalled()
+
+      // Advance to 0 seconds left (alarm)
+      act(() => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(alarmSound.play).toHaveBeenCalledTimes(1)
+
+      // Go 5 seconds past zero
+      act(() => {
+        vi.advanceTimersByTime(5000)
+      })
+
+      expect(result.current.state.isRunning).toBe(true)
+      expect(result.current.state.timeLeft).toBe(-5)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 5)
+    })
+
+    it('should not stop when disabling while negative', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Go 3 seconds past zero
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 + 3) * 1000)
+      })
+
+      expect(result.current.state.timeLeft).toBe(-3)
+      expect(result.current.state.isRunning).toBe(true)
+
+      // Disable allowNegative and advance one tick
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(result.current.state.isRunning).toBe(true)
+      expect(result.current.state.timeLeft).toBe(-4)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 4)
+    })
+  })
+
   describe('START_TIMER', () => {
     it('should start the timer', () => {
       const { result } = renderHook(() => useTimer())
@@ -278,6 +385,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: true,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -329,7 +437,7 @@ describe('useTimer', () => {
       expect(result.current.state.isRunning).toBe(true)
     })
 
-    it('should extend and restart a stopped timer', () => {
+    it('should extend the timer after reaching zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -341,7 +449,7 @@ describe('useTimer', () => {
         vi.advanceTimersByTime(5 * 60 * 1000)
       })
 
-      expect(result.current.state.isRunning).toBe(false)
+      expect(result.current.state.isRunning).toBe(true)
       expect(result.current.state.timeLeft).toBe(0)
 
       act(() => {
@@ -360,6 +468,27 @@ describe('useTimer', () => {
       })
 
       expect(result.current.state.timeLeft).toBe(5 * 60 + 2 * 60)
+      expect(result.current.state.isRunning).toBe(true)
+    })
+
+    it('should set timeLeft to extension time when extending from negative time', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 + 3) * 1000)
+      })
+
+      expect(result.current.state.timeLeft).toBe(-3)
+
+      act(() => {
+        result.current.dispatch({ type: 'EXTEND_TIMER' })
+      })
+
+      expect(result.current.state.timeLeft).toBe(2 * 60)
       expect(result.current.state.isRunning).toBe(true)
     })
   })
@@ -388,6 +517,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -410,6 +540,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
   })
@@ -481,7 +612,7 @@ describe('useTimer', () => {
       expect(alarmSound.play).toHaveBeenCalledTimes(1)
     })
 
-    it('should stop running when timer reaches zero', () => {
+    it('should continue running after timer reaches zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -493,11 +624,11 @@ describe('useTimer', () => {
         vi.advanceTimersByTime(5 * 60 * 1000)
       })
 
-      expect(result.current.state.isRunning).toBe(false)
+      expect(result.current.state.isRunning).toBe(true)
       expect(result.current.state.timeLeft).toBe(0)
     })
 
-    it('should continue incrementing totalTime when timer reaches zero', () => {
+    it('should continue incrementing totalTime after zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -511,12 +642,11 @@ describe('useTimer', () => {
 
       expect(result.current.state.totalTime).toBe(5 * 60)
 
-      // No more ticks should happen after timer stops
       act(() => {
         vi.advanceTimersByTime(10 * 1000)
       })
 
-      expect(result.current.state.totalTime).toBe(5 * 60)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 10)
     })
   })
 

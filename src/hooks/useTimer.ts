@@ -18,6 +18,7 @@ export interface TimerState {
   totalTime: number
   isRunning: boolean
   isMuted: boolean
+  allowNegative: boolean
 }
 
 export type TimerAction =
@@ -27,6 +28,7 @@ export type TimerAction =
   | { type: 'EXTEND_TIMER' }
   | { type: 'RESET_TIMER' }
   | { type: 'TOGGLE_MUTE' }
+  | { type: 'TOGGLE_ALLOW_NEGATIVE' }
   | { type: 'TICK' }
 
 function timerReducer(state: TimerState, action: TimerAction): TimerState {
@@ -37,6 +39,7 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
         topicTime: newState.topicTime,
         extensionTime: newState.extensionTime,
         isMuted: newState.isMuted,
+        allowNegative: newState.allowNegative,
       })
       return newState
     }
@@ -46,6 +49,7 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
         topicTime: newState.topicTime,
         extensionTime: newState.extensionTime,
         isMuted: newState.isMuted,
+        allowNegative: newState.allowNegative,
       })
       return newState
     }
@@ -55,6 +59,17 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
         topicTime: newState.topicTime,
         extensionTime: newState.extensionTime,
         isMuted: newState.isMuted,
+        allowNegative: newState.allowNegative,
+      })
+      return newState
+    }
+    case 'TOGGLE_ALLOW_NEGATIVE': {
+      const newState = { ...state, allowNegative: !state.allowNegative }
+      store.set(SETTINGS_KEY, {
+        topicTime: newState.topicTime,
+        extensionTime: newState.extensionTime,
+        isMuted: newState.isMuted,
+        allowNegative: newState.allowNegative,
       })
       return newState
     }
@@ -68,7 +83,10 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
     case 'EXTEND_TIMER':
       return {
         ...state,
-        timeLeft: state.timeLeft + state.extensionTime,
+        timeLeft:
+          state.timeLeft > 0
+            ? state.timeLeft + state.extensionTime
+            : state.extensionTime,
         isRunning: true,
       }
     case 'RESET_TIMER':
@@ -80,15 +98,6 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
       }
     case 'TICK': {
       const newTimeLeft = state.timeLeft - 1
-
-      if (newTimeLeft <= 0) {
-        return {
-          ...state,
-          isRunning: false,
-          timeLeft: 0,
-          totalTime: state.totalTime + 1,
-        }
-      }
 
       return {
         ...state,
@@ -115,6 +124,7 @@ export function useTimer({
     totalTime: 0,
     isRunning: false,
     isMuted: savedSettings.isMuted || false,
+    allowNegative: savedSettings.allowNegative || false,
   }
 
   const [state, dispatch] = useReducer(timerReducer, initialState)
@@ -142,12 +152,8 @@ export function useTimer({
       dispatch({ type: 'TICK' })
     }, 1000)
 
-    if (state.timeLeft === 0) {
-      clearInterval(interval)
-    }
-
     return () => clearInterval(interval)
-  }, [state.isRunning, state.timeLeft, state.isMuted])
+  }, [state.isRunning, state.timeLeft, state.isMuted, state.allowNegative])
 
   // Hook provides state and dispatch function
   return { state, dispatch }
