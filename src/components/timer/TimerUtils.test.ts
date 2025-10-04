@@ -9,7 +9,7 @@ describe('TimerUtils', () => {
   describe('formatTime', () => {
     const sut = formatTime
 
-    describe('allowNegative: false', () => {
+    describe('allowNegative off', () => {
       it.each`
         seconds | expected
         ${-1}   | ${'00:00'}
@@ -31,7 +31,7 @@ describe('TimerUtils', () => {
       )
     })
 
-    describe('allowNegative: true', () => {
+    describe('allowNegative on', () => {
       it.each`
         seconds  | expected
         ${0}     | ${'00:00'}
