@@ -271,6 +271,105 @@ describe('useTimer', () => {
     })
   })
 
+  describe('TOGGLE_ALLOW_NEGATIVE', () => {
+    it('should toggle allowNegative and save to store', () => {
+      const { result } = renderHook(() => useTimer())
+
+      expect(result.current.state.allowNegative).toBe(false)
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      expect(result.current.state.allowNegative).toBe(true)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: false,
+        allowNegative: true,
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      expect(result.current.state.allowNegative).toBe(false)
+      expect(store.set).toHaveBeenCalledWith('timerSettings', {
+        topicTime: 5 * 60,
+        extensionTime: 2 * 60,
+        isMuted: false,
+        allowNegative: false,
+      })
+    })
+
+    it('should continue running and go negative when enabled', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Fast-forward to 1 second left
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 - 1) * 1000)
+      })
+
+      expect(alarmSound.play).not.toHaveBeenCalled()
+
+      // Advance to 0 seconds left (alarm)
+      act(() => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(alarmSound.play).toHaveBeenCalledTimes(1)
+
+      // Go 5 seconds past zero
+      act(() => {
+        vi.advanceTimersByTime(5000)
+      })
+
+      expect(result.current.state.isRunning).toBe(true)
+      expect(result.current.state.timeLeft).toBe(-5)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 5)
+    })
+
+    it('should stop at next tick if disabled while negative', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      // Go 3 seconds past zero
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 + 3) * 1000)
+      })
+
+      expect(result.current.state.timeLeft).toBe(-3)
+      expect(result.current.state.isRunning).toBe(true)
+
+      // Disable allowNegative and advance one tick
+      act(() => {
+        result.current.dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })
+      })
+
+      act(() => {
+        vi.advanceTimersByTime(1000)
+      })
+
+      expect(result.current.state.isRunning).toBe(false)
+      expect(result.current.state.timeLeft).toBe(0)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 4)
+    })
+  })
+
   describe('START_TIMER', () => {
     it('should start the timer', () => {
       const { result } = renderHook(() => useTimer())

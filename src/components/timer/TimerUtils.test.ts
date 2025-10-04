@@ -9,25 +9,46 @@ describe('TimerUtils', () => {
   describe('formatTime', () => {
     const sut = formatTime
 
-    it.each`
-      seconds | expected
-      ${-1}   | ${'00:00'}
-      ${0}    | ${'00:00'}
-      ${7}    | ${'00:07'}
-      ${59}   | ${'00:59'}
-      ${60}   | ${'01:00'}
-      ${61}   | ${'01:01'}
-      ${599}  | ${'09:59'}
-      ${600}  | ${'10:00'}
-      ${3599} | ${'59:59'}
-      ${3600} | ${'60:00'}
-      ${3661} | ${'61:01'}
-    `(
-      'should format $seconds seconds as $expected',
-      ({ seconds, expected }) => {
-        expect(sut(seconds)).toBe(expected)
-      }
-    )
+    describe('allowNegative: false', () => {
+      it.each`
+        seconds | expected
+        ${-1}   | ${'00:00'}
+        ${0}    | ${'00:00'}
+        ${7}    | ${'00:07'}
+        ${59}   | ${'00:59'}
+        ${60}   | ${'01:00'}
+        ${61}   | ${'01:01'}
+        ${599}  | ${'09:59'}
+        ${600}  | ${'10:00'}
+        ${3599} | ${'59:59'}
+        ${3600} | ${'60:00'}
+        ${3661} | ${'61:01'}
+      `(
+        'should format $seconds seconds as $expected',
+        ({ seconds, expected }) => {
+          expect(sut(seconds)).toBe(expected)
+        }
+      )
+    })
+
+    describe('allowNegative: true', () => {
+      it.each`
+        seconds  | expected
+        ${0}     | ${'00:00'}
+        ${-1}    | ${'-00:01'}
+        ${-7}    | ${'-00:07'}
+        ${-59}   | ${'-00:59'}
+        ${-60}   | ${'-01:00'}
+        ${-61}   | ${'-01:01'}
+        ${-600}  | ${'-10:00'}
+        ${-3661} | ${'-61:01'}
+      `(
+        'should format $seconds seconds as $expected',
+        ({ seconds, expected }) => {
+          expect(sut(seconds, { allowNegative: true })).toBe(expected)
+        }
+      )
+    })
   })
 
   describe('sound objects', () => {
