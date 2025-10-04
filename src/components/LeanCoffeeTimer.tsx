@@ -10,7 +10,7 @@ import { MuteButton } from '@/components/sound/MuteButton'
 import { cva } from 'class-variance-authority'
 import { GitHubButton } from './github/GitHubButton'
 import { useTimer } from '@/hooks/useTimer'
-import { OverrunToggle } from '@/components/overrun/OverrunToggle'
+import { NegativeToggle } from '@/components/negative/NegativeToggle'
 
 const timerVariants = cva(
   'flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300',
@@ -65,7 +65,7 @@ export default function LeanCoffeeTimer() {
             isMuted={timer.isMuted}
             onToggle={() => dispatch({ type: 'TOGGLE_MUTE' })}
           />
-          <OverrunToggle
+          <NegativeToggle
             isEnabled={!!timer.allowNegative}
             onToggle={() => dispatch({ type: 'TOGGLE_ALLOW_NEGATIVE' })}
           />

@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { OverrunToggle } from '@/components/overrun/OverrunToggle'
+import { NegativeToggle } from '@/components/negative/NegativeToggle'
 import { ThemeContextType, useTheme } from '@/contexts/ThemeContext'
 
 vi.mock('@/contexts/ThemeContext', () => ({
   useTheme: vi.fn(),
 }))
 
-describe('OverrunToggle', () => {
+describe('NegativeToggle', () => {
   const mockOnToggle = vi.fn()
 
   beforeEach(() => {
@@ -18,8 +18,8 @@ describe('OverrunToggle', () => {
     } as ThemeContextType)
   })
 
-  it('renders a button with AlarmClock icon when overrun is disabled', () => {
-    render(<OverrunToggle isEnabled={false} onToggle={mockOnToggle} />)
+  it('renders a button with AlarmClock icon when negative time is disabled', () => {
+    render(<NegativeToggle isEnabled={false} onToggle={mockOnToggle} />)
 
     const button = screen.getByRole('button', {
       name: 'Allow negative time',
@@ -28,8 +28,8 @@ describe('OverrunToggle', () => {
     expect(button).toBeInTheDocument()
   })
 
-  it('renders a button with AlarmClockMinus icon when overrun is enabled', () => {
-    render(<OverrunToggle isEnabled={true} onToggle={mockOnToggle} />)
+  it('renders a button with AlarmClockMinus icon when negative time is enabled', () => {
+    render(<NegativeToggle isEnabled={true} onToggle={mockOnToggle} />)
 
     const button = screen.getByRole('button', {
       name: 'Stop at zero (disable negative time)',
@@ -39,7 +39,7 @@ describe('OverrunToggle', () => {
   })
 
   it('calls onToggle when clicked', async () => {
-    render(<OverrunToggle isEnabled={false} onToggle={mockOnToggle} />)
+    render(<NegativeToggle isEnabled={false} onToggle={mockOnToggle} />)
 
     const button = screen.getByRole('button')
     await userEvent.click(button)
@@ -52,7 +52,7 @@ describe('OverrunToggle', () => {
       isDarkMode: true,
     } as ThemeContextType)
 
-    render(<OverrunToggle isEnabled={false} onToggle={mockOnToggle} />)
+    render(<NegativeToggle isEnabled={false} onToggle={mockOnToggle} />)
 
     const button = screen.getByRole('button')
     expect(button).toHaveClass('bg-gray-800')
@@ -64,7 +64,7 @@ describe('OverrunToggle', () => {
       isDarkMode: false,
     } as ThemeContextType)
 
-    render(<OverrunToggle isEnabled={false} onToggle={mockOnToggle} />)
+    render(<NegativeToggle isEnabled={false} onToggle={mockOnToggle} />)
 
     const button = screen.getByRole('button')
     expect(button).not.toHaveClass('bg-gray-800')

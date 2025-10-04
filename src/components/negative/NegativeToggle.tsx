@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 import { useTheme } from '@/contexts/ThemeContext'
 import { AlarmClock, AlarmClockMinus } from 'lucide-react'
 
-type OverrunToggleProps = {
+type NegativeToggleProps = {
   isEnabled: boolean
   onToggle: () => void
 }
 
-export function OverrunToggle({ isEnabled, onToggle }: OverrunToggleProps) {
+export function NegativeToggle({ isEnabled, onToggle }: NegativeToggleProps) {
   const { isDarkMode } = useTheme()
 
   return (
@@ -26,3 +26,4 @@ export function OverrunToggle({ isEnabled, onToggle }: OverrunToggleProps) {
     </Button>
   )
 }
+
