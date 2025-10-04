@@ -83,7 +83,10 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
     case 'EXTEND_TIMER':
       return {
         ...state,
-        timeLeft: state.timeLeft + state.extensionTime,
+        timeLeft:
+          state.timeLeft > 0
+            ? state.timeLeft + state.extensionTime
+            : state.extensionTime,
         isRunning: true,
       }
     case 'RESET_TIMER':

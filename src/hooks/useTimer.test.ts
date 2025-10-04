@@ -470,6 +470,27 @@ describe('useTimer', () => {
       expect(result.current.state.timeLeft).toBe(5 * 60 + 2 * 60)
       expect(result.current.state.isRunning).toBe(true)
     })
+
+    it('should set timeLeft to extension time when extending from negative time', () => {
+      const { result } = renderHook(() => useTimer())
+
+      act(() => {
+        result.current.dispatch({ type: 'START_TIMER' })
+      })
+
+      act(() => {
+        vi.advanceTimersByTime((5 * 60 + 3) * 1000)
+      })
+
+      expect(result.current.state.timeLeft).toBe(-3)
+
+      act(() => {
+        result.current.dispatch({ type: 'EXTEND_TIMER' })
+      })
+
+      expect(result.current.state.timeLeft).toBe(2 * 60)
+      expect(result.current.state.isRunning).toBe(true)
+    })
   })
 
   describe('RESET_TIMER', () => {
