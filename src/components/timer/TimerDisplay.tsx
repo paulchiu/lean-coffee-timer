@@ -63,7 +63,11 @@ type TimerDisplayProps = {
   allowNegative?: boolean
 }
 
-export function TimerDisplay({ timeLeft, totalTime, allowNegative = false }: TimerDisplayProps) {
+export function TimerDisplay({
+  timeLeft,
+  totalTime,
+  allowNegative = false,
+}: TimerDisplayProps) {
   const { theme } = useTheme()
 
   return (
@@ -80,7 +84,7 @@ export function TimerDisplay({ timeLeft, totalTime, allowNegative = false }: Tim
         }}
         aria-label="Time remaining"
       >
-        {allowNegative ? formatTime(timeLeft, true) : formatTime(timeLeft)}
+        {formatTime(timeLeft, allowNegative)}
       </motion.div>
 
       <div className={discussionTimeVariants({ theme })}>
