@@ -337,7 +337,7 @@ describe('useTimer', () => {
       expect(result.current.state.totalTime).toBe(5 * 60 + 5)
     })
 
-    it('should stop at next tick if disabled while negative', () => {
+    it('should not stop when disabling while negative', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -364,8 +364,8 @@ describe('useTimer', () => {
         vi.advanceTimersByTime(1000)
       })
 
-      expect(result.current.state.isRunning).toBe(false)
-      expect(result.current.state.timeLeft).toBe(0)
+      expect(result.current.state.isRunning).toBe(true)
+      expect(result.current.state.timeLeft).toBe(-4)
       expect(result.current.state.totalTime).toBe(5 * 60 + 4)
     })
   })
@@ -437,7 +437,7 @@ describe('useTimer', () => {
       expect(result.current.state.isRunning).toBe(true)
     })
 
-    it('should extend and restart a stopped timer', () => {
+    it('should extend the timer after reaching zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -449,7 +449,7 @@ describe('useTimer', () => {
         vi.advanceTimersByTime(5 * 60 * 1000)
       })
 
-      expect(result.current.state.isRunning).toBe(false)
+      expect(result.current.state.isRunning).toBe(true)
       expect(result.current.state.timeLeft).toBe(0)
 
       act(() => {
@@ -591,7 +591,7 @@ describe('useTimer', () => {
       expect(alarmSound.play).toHaveBeenCalledTimes(1)
     })
 
-    it('should stop running when timer reaches zero', () => {
+    it('should continue running after timer reaches zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -603,11 +603,11 @@ describe('useTimer', () => {
         vi.advanceTimersByTime(5 * 60 * 1000)
       })
 
-      expect(result.current.state.isRunning).toBe(false)
+      expect(result.current.state.isRunning).toBe(true)
       expect(result.current.state.timeLeft).toBe(0)
     })
 
-    it('should continue incrementing totalTime when timer reaches zero', () => {
+    it('should continue incrementing totalTime after zero', () => {
       const { result } = renderHook(() => useTimer())
 
       act(() => {
@@ -621,12 +621,11 @@ describe('useTimer', () => {
 
       expect(result.current.state.totalTime).toBe(5 * 60)
 
-      // No more ticks should happen after timer stops
       act(() => {
         vi.advanceTimersByTime(10 * 1000)
       })
 
-      expect(result.current.state.totalTime).toBe(5 * 60)
+      expect(result.current.state.totalTime).toBe(5 * 60 + 10)
     })
   })
 

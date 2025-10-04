@@ -95,14 +95,6 @@ function timerReducer(state: TimerState, action: TimerAction): TimerState {
       }
     case 'TICK': {
       const newTimeLeft = state.timeLeft - 1
-      if (!state.allowNegative && newTimeLeft <= 0) {
-        return {
-          ...state,
-          isRunning: false,
-          timeLeft: 0,
-          totalTime: state.totalTime + 1,
-        }
-      }
 
       return {
         ...state,
@@ -156,10 +148,6 @@ export function useTimer({
 
       dispatch({ type: 'TICK' })
     }, 1000)
-
-    if (!state.allowNegative && state.timeLeft === 0) {
-      clearInterval(interval)
-    }
 
     return () => clearInterval(interval)
   }, [state.isRunning, state.timeLeft, state.isMuted, state.allowNegative])
