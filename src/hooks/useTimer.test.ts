@@ -38,6 +38,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -58,6 +59,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: true,
+        allowNegative: false,
       })
     })
 
@@ -73,6 +75,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -95,6 +98,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: true,
+        allowNegative: false,
       })
     })
   })
@@ -112,6 +116,7 @@ describe('useTimer', () => {
         topicTime: 10 * 60,
         extensionTime: 2 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -151,6 +156,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 3 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -192,6 +198,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 2 * 60,
         isMuted: true,
+        allowNegative: false,
       })
 
       act(() => {
@@ -203,6 +210,7 @@ describe('useTimer', () => {
         topicTime: 5 * 60,
         extensionTime: 2 * 60,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -278,6 +286,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: true,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -388,6 +397,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
 
@@ -410,6 +420,7 @@ describe('useTimer', () => {
         totalTime: 0,
         isRunning: false,
         isMuted: false,
+        allowNegative: false,
       })
     })
   })
