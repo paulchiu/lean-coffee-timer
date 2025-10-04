@@ -45,7 +45,7 @@ describe('TimerUtils', () => {
       `(
         'should format $seconds seconds as $expected',
         ({ seconds, expected }) => {
-          expect(sut(seconds, { allowNegative: true })).toBe(expected)
+          expect(sut(seconds, true)).toBe(expected)
         }
       )
     })

@@ -11,9 +11,8 @@ export const alarmSound = new Howl({
 // Format seconds to MM:SS
 export const formatTime = (
   time: number,
-  opts?: { allowNegative?: boolean }
+  allowNegative: boolean = false
 ): string => {
-  const allowNegative = opts?.allowNegative ?? false
 
   if (time < 0 && !allowNegative) {
     return '00:00'

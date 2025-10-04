@@ -80,9 +80,7 @@ export function TimerDisplay({ timeLeft, totalTime, allowNegative = false }: Tim
         }}
         aria-label="Time remaining"
       >
-        {allowNegative
-          ? formatTime(timeLeft, { allowNegative: true })
-          : formatTime(timeLeft)}
+        {allowNegative ? formatTime(timeLeft, true) : formatTime(timeLeft)}
       </motion.div>
 
       <div className={discussionTimeVariants({ theme })}>
