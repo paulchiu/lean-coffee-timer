@@ -28,7 +28,7 @@ A simple timer for tracking Lean Coffee meetings.
 
 ### Prerequisites
 
-- Node.js (v20+) with NPM
+- Node.js (v24+) with NPM
 
 ### Installation
 
