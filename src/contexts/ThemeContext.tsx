@@ -23,26 +23,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return storedTheme === 'dark'
   })
 
-  const [theme, setTheme] = useState<ThemeContextType['theme']>(() => {
-    const storedTheme = store.get(SETTINGS_KEY)
-    return storedTheme || 'light'
-  })
+  const theme: ThemeContextType['theme'] = isDarkMode ? 'dark' : 'light'
 
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev)
   }
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-      setTheme('dark')
-      store.set(SETTINGS_KEY, 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      setTheme('light')
-      store.set(SETTINGS_KEY, 'light')
-    }
-  }, [isDarkMode])
+    document.documentElement.classList.toggle('dark', isDarkMode)
+    store.set(SETTINGS_KEY, theme)
+  }, [isDarkMode, theme])
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, theme, toggleDarkMode }}>
