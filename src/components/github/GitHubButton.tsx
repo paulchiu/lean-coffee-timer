@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/contexts/ThemeContext'
-import { Github } from 'lucide-react'
+import { GitHubIcon } from '@/components/github/GitHubIcon'
 
 interface GitHubButtonProps {
   repo: string
@@ -19,7 +19,7 @@ export function GitHubButton({ repo }: GitHubButtonProps) {
       aria-label={`View ${repo} on GitHub (opens new in tab)`}
     >
       <a href={githubUrl} target="_blank">
-        <Github size={20} />
+        <GitHubIcon size={20} />
       </a>
     </Button>
   )

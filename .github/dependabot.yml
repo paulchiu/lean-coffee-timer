@@ -27,3 +27,7 @@ updates:
           - "major"
           - "minor"
           - "patch"
+    ignore:
+      # Keep @types/node on the same major as the Node LTS in .nvmrc
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
